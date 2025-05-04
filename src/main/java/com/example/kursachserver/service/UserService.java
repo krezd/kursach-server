@@ -76,6 +76,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> createUser(RegistrationRequest request) {
         User user = User.builder()
                 .name(request.getName())
@@ -94,7 +95,7 @@ public class UserService implements UserDetailsService {
     public ResponseEntity<?> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = new ArrayList<>();
-        for(User user : users) {
+        for (User user : users) {
             userResponses.add(new UserResponse(user));
         }
         return new ResponseEntity<>(userResponses, HttpStatus.OK);
@@ -112,7 +113,7 @@ public class UserService implements UserDetailsService {
         return new ResponseEntity<>(new UserResponseGenerator(userRepository.findAllByPosition(position)), HttpStatus.OK);
     }
 
-
+    @Transactional
     public ResponseEntity<?> deleteUserById(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
@@ -138,7 +139,7 @@ public class UserService implements UserDetailsService {
     //Обновление пользователя самим пользователем
     //Пользователь может поменять лишь имя и пароль
     //TODO дописать методы обновления данных пользователя после написания клиентской части
-
+    @Transactional
     public ResponseEntity<?> updateUserByWorker(Long userId, UpdateUserRequest request) {
         if (userRepository.existsById(userId)) {
             User user = userRepository.findById(userId).orElse(null);
@@ -157,6 +158,8 @@ public class UserService implements UserDetailsService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+
+    @Transactional
     public ResponseEntity<?> updateUserByAdmin(UpdateUserByAdminRequest request) {
         if (userRepository.existsById(request.getId())) {
             User user = userRepository.findById(request.getId()).orElse(null);

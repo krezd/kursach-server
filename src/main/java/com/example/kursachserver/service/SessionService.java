@@ -69,12 +69,12 @@ public class SessionService {
         return new ResponseEntity<>(sessions, HttpStatus.OK);
     }
 
-   public ResponseEntity<?> searchSession(String name, String position, LocalDate date){
+    public ResponseEntity<?> searchSession(String name, String position, LocalDate date) {
         List<SessionWithStatus> session = getSessionsWithStatus(sessionRepository.searchSessions(name, position, date));
-       return new ResponseEntity<>(session, HttpStatus.OK);
-   }
+        return new ResponseEntity<>(session, HttpStatus.OK);
+    }
 
-    //TODO добавить HttpServletRequest для вытаскивания из токена userID;
+    @Transactional
     public ResponseEntity<?> createSession(Long userId, Session session) {
         if (sessionRepository.existsById(session.getId())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -92,10 +92,10 @@ public class SessionService {
         return new ResponseEntity<>(sessionRepository.save(session), HttpStatus.CREATED);
     }
 
-private List<SessionWithStatus> getSessionsWithStatus(List<Session> sessions) {
+    private List<SessionWithStatus> getSessionsWithStatus(List<Session> sessions) {
 
         List<SessionWithStatus> sessionsWithStatus = new ArrayList<>();
-        for(Session session : sessions) {
+        for (Session session : sessions) {
 
             Duration goodTime = Duration.ZERO;
             Duration badTime = Duration.ZERO;
@@ -133,13 +133,14 @@ private List<SessionWithStatus> getSessionsWithStatus(List<Session> sessions) {
             ));
         }
         return sessionsWithStatus;
-}
+    }
+
     public ResponseEntity<List<?>> getAllSession() {
         List<SessionWithStatus> sessionsWithStatus = getSessionsWithStatus(sessionRepository.findAll());
         return new ResponseEntity<>(sessionsWithStatus, HttpStatus.OK);
     }
 
-    //TODO добавить HttpServletRequest для вытаскивания из токена userID;
+    @Transactional
     public ResponseEntity<?> updateSession(Long userId, Session session) {
         if (sessionRepository.existsById(session.getId())) {
             Session session1 = sessionRepository.findById(session.getId()).orElse(null);
@@ -166,6 +167,7 @@ private List<SessionWithStatus> getSessionsWithStatus(List<Session> sessions) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @Transactional
     public ResponseEntity<?> deleteSessionById(UUID id) {
         if (sessionRepository.existsById(id)) {
             sessionRepository.deleteById(id);

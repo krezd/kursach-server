@@ -55,7 +55,7 @@ public class ProcessService {
     }
 
 
-
+    @Transactional
     public ResponseEntity<?> addProcesses(UUID sessionId, List<Process> processes) {
         // Проверка существования сессии
         Session session = sessionRepository.findById(sessionId).orElse(null);
@@ -107,7 +107,7 @@ public class ProcessService {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-
+    @Transactional
     public ResponseEntity<?> addProcess(UUID sessionId, Process process) {
         Session session = sessionRepository.findById(sessionId).orElse(null);
         if (session != null) {
@@ -116,7 +116,7 @@ public class ProcessService {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
+    @Transactional
     public ResponseEntity<?> deleteProcessById(Long id) {
         if (processRepository.existsById(id)) {
             processRepository.deleteById(id);
@@ -154,7 +154,7 @@ public class ProcessService {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
+    @Transactional
     public ResponseEntity<?> updateProcessById(Long id, Process process) {
         if (processRepository.existsById(id)) {
             Process oldProcess = processRepository.findById(id).orElse(null);
@@ -164,7 +164,7 @@ public class ProcessService {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
+    @Transactional
     public ResponseEntity<?> deleteAll() {
         processRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.OK);

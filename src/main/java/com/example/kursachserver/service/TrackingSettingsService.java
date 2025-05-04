@@ -3,6 +3,7 @@ package com.example.kursachserver.service;
 import com.example.kursachserver.dto.request.TrackingSettingsRequest;
 import com.example.kursachserver.model.TrackingSettings;
 import com.example.kursachserver.repository.TrackingSettingsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class TrackingSettingsService {
                 .orElseThrow(() -> new RuntimeException("Настройки не найдены"));
     }
 
+    @Transactional
     public TrackingSettings updateSettings(TrackingSettingsRequest request) {
         TrackingSettings settings = trackingSettingsRepository.findById(1L)
                 .orElse(new TrackingSettings());
