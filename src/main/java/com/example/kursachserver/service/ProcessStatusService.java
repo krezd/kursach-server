@@ -1,6 +1,7 @@
 package com.example.kursachserver.service;
 
 import com.example.kursachserver.dto.response.ProcessStatusEvent;
+import com.example.kursachserver.model.BlockedSite;
 import com.example.kursachserver.model.ProcessStatus;
 import com.example.kursachserver.model.Session;
 import com.example.kursachserver.repository.ProcessStatusRepository;
@@ -63,12 +64,12 @@ public class ProcessStatusService {
 
     @Transactional
     public ResponseEntity<ProcessStatus> deleteProcessStatus(Long processId) {
-        if (processStatusRepository.existsById(processId)) {
-            processStatusRepository.deleteById(processId);
-            ws.convertAndSend("/topic/process-status", new ProcessStatusEvent(ProcessStatusEvent.Operation.DELETE, new ProcessStatus(processId, null, null)));
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ProcessStatus ps = processStatusRepository.findById(processId)
+                .orElseThrow(() -> new IllegalArgumentException("No processStatus with id " + processId));
+        processStatusRepository.delete(ps);
+        ws.convertAndSend("/topic/process-status", new ProcessStatusEvent(ProcessStatusEvent.Operation.DELETE, ps));
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Transactional
