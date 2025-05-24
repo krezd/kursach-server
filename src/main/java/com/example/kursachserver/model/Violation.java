@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -31,7 +32,7 @@ public class Violation {
     private Severity severity;
 
     @Column(nullable = false)
-    private Instant occurredAt;
+    private OffsetDateTime occurredAt;
 
     // Здесь свободный JSON / текст с деталями (IP, count, timestamp и т.д.)
     @Column(columnDefinition = "CLOB")
