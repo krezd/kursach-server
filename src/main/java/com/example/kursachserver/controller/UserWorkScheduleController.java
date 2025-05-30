@@ -6,6 +6,7 @@ import com.example.kursachserver.model.User;
 import com.example.kursachserver.model.UserWorkSchedule;
 import com.example.kursachserver.repository.UserRepository;
 import com.example.kursachserver.repository.UserWorkScheduleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class UserWorkScheduleController {
         }).toList();
     }
 
-    // Массовое обновление расписания
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<?> updateSchedule(@RequestBody UserWorkScheduleUpdateDto dto) {
         User user = userRepo.findById(dto.getUserId())

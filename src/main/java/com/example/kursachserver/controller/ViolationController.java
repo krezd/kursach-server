@@ -9,12 +9,16 @@ import com.example.kursachserver.model.Violation;
 import com.example.kursachserver.repository.UserRepository;
 import com.example.kursachserver.repository.ViolationRepository;
 import com.example.kursachserver.service.ViolationService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +100,20 @@ public class ViolationController {
         return new ResponseEntity<>(v, HttpStatus.CREATED);
     }
 
+    @GetMapping("/report")
+    public ResponseEntity<byte[]> generatePdfReport(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) ViolationType type,
+            @RequestParam(required = false) Severity severity,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime to
+    ) throws Exception {
+        byte[] pdf = violationService.generateReport(userId, type, severity, from, to);
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"violations-report.pdf\"")
+                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
     /**
      * Логика подбора уровня серьёзности по типу (и, при желании, деталям)
      */
